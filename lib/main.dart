@@ -43,8 +43,6 @@ class _QuizzPageState extends State<QuizzPage> {
 
   QuestionBrain questionBrain = QuestionBrain();
 
-  int questionNumber = 0;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -57,7 +55,7 @@ class _QuizzPageState extends State<QuizzPage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questionBrain.questionBank[questionNumber].questionText,
+                questionBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
@@ -77,15 +75,14 @@ class _QuizzPageState extends State<QuizzPage> {
                 textStyle: const TextStyle(fontSize: 20.0),
               ),
               onPressed: () {
-                bool correctAnswer =
-                    questionBrain.questionBank[questionNumber].questionAnswer;
+                bool correctAnswer = questionBrain.getCorrectAnswer();
                 if (correctAnswer == true) {
                   print('You got it right');
                 } else {
                   print('You got it wrong');
                 }
                 setState(() {
-                  questionNumber++;
+                  questionBrain.nextQuestion();
                 });
               },
               child: const Text('True'),
@@ -102,15 +99,14 @@ class _QuizzPageState extends State<QuizzPage> {
                 textStyle: const TextStyle(fontSize: 20.0),
               ),
               onPressed: () {
-                bool correctAnswer =
-                    questionBrain.questionBank[questionNumber].questionAnswer;
+                bool correctAnswer = questionBrain.getCorrectAnswer();
                 if (correctAnswer == false) {
                   print('You got it right');
                 } else {
                   print('You got it wrong');
                 }
                 setState(() {
-                  questionNumber++;
+                  questionBrain.nextQuestion();
                 });
               },
               child: const Text('False'),
