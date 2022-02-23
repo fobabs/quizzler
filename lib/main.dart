@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:quizzler/question_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() => runApp(const Quizzler());
 
@@ -40,6 +39,39 @@ class _QuizzPageState extends State<QuizzPage> {
 
   List<bool> answers = [false, true, true];
   */
+  List<Icon> scores = [];
+
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = questionBrain.getCorrectAnswer();
+    setState(() {
+      if (questionBrain.isFinished()) {
+        Alert(
+          context: context,
+          title: 'Finished',
+          desc: 'You have reached the end of the quiz.',
+        ).show();
+
+        questionBrain.reset();
+        scores = [];
+      } else {
+        if (userPickedAnswer == correctAnswer) {
+          scores.add(const Icon(
+            Icons.check,
+            color: Colors.green,
+            size: 20,
+          ));
+        } else {
+          scores.add(const Icon(
+            Icons.close,
+            color: Colors.red,
+            size: 20,
+          ));
+        }
+      }
+
+      questionBrain.nextQuestion();
+    });
+  }
 
   QuestionBrain questionBrain = QuestionBrain();
 
@@ -75,15 +107,7 @@ class _QuizzPageState extends State<QuizzPage> {
                 textStyle: const TextStyle(fontSize: 20.0),
               ),
               onPressed: () {
-                bool correctAnswer = questionBrain.getCorrectAnswer();
-                if (correctAnswer == true) {
-                  print('You got it right');
-                } else {
-                  print('You got it wrong');
-                }
-                setState(() {
-                  questionBrain.nextQuestion();
-                });
+                checkAnswer(true);
               },
               child: const Text('True'),
             ),
@@ -99,17 +123,18 @@ class _QuizzPageState extends State<QuizzPage> {
                 textStyle: const TextStyle(fontSize: 20.0),
               ),
               onPressed: () {
-                bool correctAnswer = questionBrain.getCorrectAnswer();
-                if (correctAnswer == false) {
-                  print('You got it right');
-                } else {
-                  print('You got it wrong');
-                }
-                setState(() {
-                  questionBrain.nextQuestion();
-                });
+                checkAnswer(false);
               },
               child: const Text('False'),
+            ),
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: scores,
             ),
           ),
         ),
